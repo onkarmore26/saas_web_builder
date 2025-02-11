@@ -1,7 +1,7 @@
-'use client'
-import { Tag } from '@prisma/client'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+"use client";
+import { Tag } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,17 +12,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../ui/alert-dialog'
-import TagComponent from './tag'
-import { PlusCircleIcon, TrashIcon, X } from 'lucide-react'
-import { toast } from '../ui/use-toast'
-import { v4 } from 'uuid'
+} from "../ui/alert-dialog";
+import TagComponent from "./tag";
+import { PlusCircleIcon, TrashIcon, X } from "lucide-react";
+import { toast } from "../ui/use-toast";
+import { v4 } from "uuid";
 import {
   deleteTag,
   getTagsForSubaccount,
   saveActivityLogsNotification,
   upsertTag,
-} from '@/lib/queries'
+} from "@/lib/queries";
 
 import {
   Command,
@@ -32,56 +32,56 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/ui/command'
+} from "@/components/ui/command";
 
 type Props = {
-  subAccountId: string
-  getSelectedTags: (tags: Tag[]) => void
-  defaultTags?: Tag[]
-}
+  subAccountId: string;
+  getSelectedTags: (tags: Tag[]) => void;
+  defaultTags?: Tag[];
+};
 
-const TagColors = ['BLUE', 'ORANGE', 'ROSE', 'PURPLE', 'GREEN'] as const
-export type TagColor = (typeof TagColors)[number]
+const TagColors = ["BLUE", "ORANGE", "ROSE", "PURPLE", "GREEN"] as const;
+export type TagColor = (typeof TagColors)[number];
 
 const TagCreator = ({ getSelectedTags, subAccountId, defaultTags }: Props) => {
-  const [selectedTags, setSelectedTags] = useState<Tag[]>(defaultTags || [])
-  const [tags, setTags] = useState<Tag[]>([])
-  const router = useRouter()
-  const [value, setValue] = useState('')
-  const [selectedColor, setSelectedColor] = useState('')
-
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(defaultTags || []);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const router = useRouter();
+  const [value, setValue] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  //fixed build error
   useEffect(() => {
-    getSelectedTags(selectedTags)
-  }, [selectedTags])
+    getSelectedTags(selectedTags);
+  }, [selectedTags, getSelectedTags]);
 
   useEffect(() => {
     if (subAccountId) {
       const fetchData = async () => {
-        const response = await getTagsForSubaccount(subAccountId)
-        if (response) setTags(response.Tags)
-      }
-      fetchData()
+        const response = await getTagsForSubaccount(subAccountId);
+        if (response) setTags(response.Tags);
+      };
+      fetchData();
     }
-  }, [subAccountId])
+  }, [subAccountId]);
 
   const handleDeleteSelection = (tagId: string) => {
-    setSelectedTags(selectedTags.filter((tag) => tag.id !== tagId))
-  }
+    setSelectedTags(selectedTags.filter((tag) => tag.id !== tagId));
+  };
 
   const handleAddTag = async () => {
     if (!value) {
       toast({
-        variant: 'destructive',
-        title: 'Tags need to have a name',
-      })
-      return
+        variant: "destructive",
+        title: "Tags need to have a name",
+      });
+      return;
     }
     if (!selectedColor) {
       toast({
-        variant: 'destructive',
-        title: 'Please Select a color',
-      })
-      return
+        variant: "destructive",
+        title: "Please Select a color",
+      });
+      return;
     }
     const tagData: Tag = {
       color: selectedColor,
@@ -90,58 +90,58 @@ const TagCreator = ({ getSelectedTags, subAccountId, defaultTags }: Props) => {
       name: value,
       subAccountId,
       updatedAt: new Date(),
-    }
+    };
 
-    setTags([...tags, tagData])
-    setValue('')
-    setSelectedColor('')
+    setTags([...tags, tagData]);
+    setValue("");
+    setSelectedColor("");
     try {
-      const response = await upsertTag(subAccountId, tagData)
+      const response = await upsertTag(subAccountId, tagData);
       toast({
-        title: 'Created the tag',
-      })
+        title: "Created the tag",
+      });
 
       await saveActivityLogsNotification({
         agencyId: undefined,
         description: `Updated a tag | ${response?.name}`,
         subaccountId: subAccountId,
-      })
+      });
     } catch (error) {
       toast({
-        variant: 'destructive',
-        title: 'Could not create tag',
-      })
+        variant: "destructive",
+        title: "Could not create tag",
+      });
     }
-  }
+  };
 
   const handleAddSelections = (tag: Tag) => {
     if (selectedTags.every((t) => t.id !== tag.id)) {
-      setSelectedTags([...selectedTags, tag])
+      setSelectedTags([...selectedTags, tag]);
     }
-  }
+  };
   const handleDeleteTag = async (tagId: string) => {
-    setTags(tags.filter((tag) => tag.id !== tagId))
+    setTags(tags.filter((tag) => tag.id !== tagId));
     try {
-      const response = await deleteTag(tagId)
+      const response = await deleteTag(tagId);
       toast({
-        title: 'Deleted tag',
-        description: 'The tag is deleted from your subaccount.',
-      })
+        title: "Deleted tag",
+        description: "The tag is deleted from your subaccount.",
+      });
 
       await saveActivityLogsNotification({
         agencyId: undefined,
         description: `Deleted a tag | ${response?.name}`,
         subaccountId: subAccountId,
-      })
+      });
 
-      router.refresh()
+      router.refresh();
     } catch (error) {
       toast({
-        variant: 'destructive',
-        title: 'Could not delete tag',
-      })
+        variant: "destructive",
+        title: "Could not delete tag",
+      });
     }
-  }
+  };
 
   return (
     <AlertDialog>
@@ -149,14 +149,8 @@ const TagCreator = ({ getSelectedTags, subAccountId, defaultTags }: Props) => {
         {!!selectedTags.length && (
           <div className="flex flex-wrap gap-2 p-2 bg-background border-2 border-border rounded-md">
             {selectedTags.map((tag) => (
-              <div
-                key={tag.id}
-                className="flex items-center"
-              >
-                <TagComponent
-                  title={tag.name}
-                  colorName={tag.color}
-                />
+              <div key={tag.id} className="flex items-center">
+                <TagComponent title={tag.name} colorName={tag.color} />
                 <X
                   size={14}
                   className="text-muted-foreground cursor-pointer"
@@ -197,10 +191,7 @@ const TagCreator = ({ getSelectedTags, subAccountId, defaultTags }: Props) => {
                 className="hover:!bg-secondary !bg-transparent flex items-center justify-between !font-light cursor-pointer"
               >
                 <div onClick={() => handleAddSelections(tag)}>
-                  <TagComponent
-                    title={tag.name}
-                    colorName={tag.color}
-                  />
+                  <TagComponent title={tag.name} colorName={tag.color} />
                 </div>
 
                 <AlertDialogTrigger>
@@ -236,7 +227,7 @@ const TagCreator = ({ getSelectedTags, subAccountId, defaultTags }: Props) => {
         </CommandList>
       </Command>
     </AlertDialog>
-  )
-}
+  );
+};
 
-export default TagCreator
+export default TagCreator;
