@@ -52,7 +52,8 @@ const TagCreator = ({ getSelectedTags, subAccountId, defaultTags }: Props) => {
   //fixed build error
   useEffect(() => {
     getSelectedTags(selectedTags);
-  }, [selectedTags, getSelectedTags]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTags]);
 
   useEffect(() => {
     if (subAccountId) {
