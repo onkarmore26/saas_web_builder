@@ -104,8 +104,24 @@ It will show you Lead Cycle, over here you can give description & add your conta
 
 ### Your Workspace
 Now here comes the best part, in the funnel section you can very easily start developing your Website.
+
    It has wide range of predefined components which you can just drag and drop, it includes close to everything over here you can use almost all the css properties from changing text color , flexbox to everything with just single click. You can add text, media, links, videos, you can layer your elements, and also you can drag and drop stripe checkout page to receive payments for the created website.
-   And the website you are going to build are completely responsive for all the  devices with full functionality, and with just one click your site will be deployed and will become live on the Plura's Vercel subdomain. It is this easy to use
+   
+   And the website you are going to build are completely responsive for all the  devices with full functionality, and with just one click your site will be deployed and will become live on the Plura's Vercel subdomain. It is this easy to use.
+
+   
+![Website Builder Screenshot](public/a.png)
+![Website Builder Screenshot](public/b.png)
+
+![Website Builder Screenshot](public/c.png)
+
+![Website Builder Screenshot](public/d.png)
+
+
+### Deployed Website
+So with the help of Plura you can make cool website right away like this ...
+![Website Builder Screenshot](public/e.png)
+
 
 
 
